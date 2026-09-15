@@ -22,14 +22,12 @@ export default function Card({
 
   return (
     <View style={styles.card}>
-
       <Image
         source={{ uri: produto.imagem }}
         style={styles.imagem}
       />
 
       <View style={styles.informacoes}>
-
         <Text style={styles.nome}>
           {produto.nome}
         </Text>
@@ -39,7 +37,6 @@ export default function Card({
         </Text>
 
         <View style={styles.rodape}>
-
           <Text style={styles.preco}>
             {formatarPreco(produto.preco)}
           </Text>
@@ -55,11 +52,8 @@ export default function Card({
               + Add
             </Text>
           </TouchableOpacity>
-
         </View>
-
       </View>
-
     </View>
   );
 }
@@ -73,7 +67,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
 
     padding: 8,
-
     marginBottom: 10,
 
     minHeight: 95,
@@ -81,7 +74,7 @@ const styles = StyleSheet.create({
 
   imagem: {
     width: 82,
-    height: 78,
+    height: 72,
 
     borderRadius: 9,
 
@@ -118,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
 
-    marginTop: 4,
+    marginTop: 3,
   },
 
   preco: {

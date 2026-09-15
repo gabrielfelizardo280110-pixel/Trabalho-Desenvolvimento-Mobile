@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 import {
   SafeAreaView,
@@ -6,34 +6,51 @@ import {
   Text,
   TextInput,
   ScrollView,
+  TouchableOpacity,
   StyleSheet,
-} from "react-native";
+} from 'react-native';
 
-import Card from "../components/card";
-import produtos from "../data/produtos";
-import cores from "../constants/cores";
+import Card from '../components/card';
+import produtos from '../data/produtos';
+import cores from '../constants/cores';
 
-export default function Cardapio({ totalItens, adicionarAoCarrinho }) {
-  const [pesquisa, setPesquisa] = useState("");
+export default function Cardapio({
+  totalItens,
+  adicionarAoCarrinho,
+  abrirCarrinho,
+}) {
+  const [pesquisa, setPesquisa] = useState('');
 
-  const produtosFiltrados = produtos.filter((produto) =>
-    produto.nome.toLowerCase().includes(pesquisa.toLowerCase()),
+  const produtosFiltrados = produtos.filter(
+    (produto) =>
+      produto.nome
+        .toLowerCase()
+        .includes(pesquisa.toLowerCase())
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.conteudo}>
-        <View style={styles.header}>
-          <Text style={styles.logo}>DelivExpress</Text>
 
-          <View style={styles.contador}>
-            <Text style={styles.contadorTexto}>{totalItens}</Text>
-          </View>
+        <View style={styles.header}>
+          <Text style={styles.logo}>
+            DelivExpress
+          </Text>
+
+          <TouchableOpacity
+            style={styles.contador}
+            onPress={abrirCarrinho}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.contadorTexto}>
+              {totalItens}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <TextInput
           style={styles.pesquisa}
-          placeholder="🔍 Buscar lanche..."
+          placeholder="▯ Buscar lanche..."
           placeholderTextColor={cores.secundaria}
           value={pesquisa}
           onChangeText={setPesquisa}
@@ -47,14 +64,19 @@ export default function Cardapio({ totalItens, adicionarAoCarrinho }) {
             <Card
               key={produto.id}
               produto={produto}
-              adicionarAoCarrinho={adicionarAoCarrinho}
+              adicionarAoCarrinho={
+                adicionarAoCarrinho
+              }
             />
           ))}
 
           {produtosFiltrados.length === 0 && (
-            <Text style={styles.naoEncontrado}>Nenhum produto encontrado.</Text>
+            <Text style={styles.naoEncontrado}>
+              Nenhum produto encontrado.
+            </Text>
           )}
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );
@@ -77,10 +99,10 @@ const styles = StyleSheet.create({
   header: {
     minHeight: 55,
 
-    flexDirection: "row",
+    flexDirection: 'row',
 
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
 
     backgroundColor: cores.primaria,
 
@@ -92,27 +114,27 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 20,
 
-    fontWeight: "bold",
+    fontWeight: 'bold',
 
     color: cores.branco,
   },
 
   contador: {
-    width: 30,
-    height: 30,
+    width: 44,
+    height: 44,
 
-    borderRadius: 15,
+    borderRadius: 22,
 
     backgroundColor: cores.sucesso,
 
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   contadorTexto: {
     fontSize: 14,
 
-    fontWeight: "bold",
+    fontWeight: 'bold',
 
     color: cores.branco,
   },
@@ -142,7 +164,7 @@ const styles = StyleSheet.create({
   },
 
   naoEncontrado: {
-    textAlign: "center",
+    textAlign: 'center',
 
     fontSize: 14,
 
