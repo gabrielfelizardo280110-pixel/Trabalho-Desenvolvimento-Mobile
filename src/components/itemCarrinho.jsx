@@ -22,104 +22,84 @@ export default function ItemCarrinho({
 
   return (
     <View style={styles.card}>
+      <View style={styles.dadosProduto}>
+        <Text style={styles.nome}>
+          {item.nome}
+        </Text>
 
-      <View style={styles.informacoes}>
-
-        <View style={styles.dadosProduto}>
-
-          <Text style={styles.nome}>
-            {item.nome}
-          </Text>
-
-          <Text style={styles.preco}>
-            {formatarPreco(item.preco)}
-          </Text>
-
-        </View>
-
-        <View style={styles.quantidade}>
-
-          <TouchableOpacity
-            style={styles.botaoQuantidade}
-            activeOpacity={0.7}
-            onPress={() =>
-              diminuirQuantidade(item.id)
-            }
-          >
-            <Text style={styles.textoQuantidade}>
-              −
-            </Text>
-          </TouchableOpacity>
-
-          <Text style={styles.numeroQuantidade}>
-            {item.quantidade}
-          </Text>
-
-          <TouchableOpacity
-            style={styles.botaoQuantidade}
-            activeOpacity={0.7}
-            onPress={() =>
-              aumentarQuantidade(item.id)
-            }
-          >
-            <Text style={styles.textoQuantidade}>
-              +
-            </Text>
-          </TouchableOpacity>
-
-        </View>
-
+        <Text style={styles.preco}>
+          {formatarPreco(item.preco)}
+        </Text>
       </View>
 
+      <View style={styles.quantidade}>
+        <TouchableOpacity
+          style={styles.botaoQuantidade}
+          activeOpacity={0.7}
+          onPress={() =>
+            diminuirQuantidade(item.id)
+          }
+        >
+          <Text style={styles.textoQuantidade}>
+            −
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.numeroQuantidade}>
+          {item.quantidade}
+        </Text>
+
+        <TouchableOpacity
+          style={styles.botaoQuantidade}
+          activeOpacity={0.7}
+          onPress={() =>
+            aumentarQuantidade(item.id)
+          }
+        >
+          <Text style={styles.textoQuantidade}>
+            +
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
+    minHeight: 80,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
     backgroundColor: cores.fundoClaro,
 
     borderRadius: 12,
 
     padding: 14,
-
     marginBottom: 10,
-  },
-
-  informacoes: {
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
 
   dadosProduto: {
     flex: 1,
-
     marginRight: 10,
   },
 
   nome: {
     fontSize: 16,
-
     fontWeight: 'bold',
-
     color: cores.textoEscuro,
   },
 
   preco: {
     fontSize: 14,
-
     fontWeight: 'bold',
-
     color: cores.erro,
-
     marginTop: 4,
   },
 
   quantidade: {
     flexDirection: 'row',
-
     alignItems: 'center',
   },
 
@@ -137,19 +117,14 @@ const styles = StyleSheet.create({
 
   textoQuantidade: {
     fontSize: 22,
-
     fontWeight: 'bold',
-
     color: cores.branco,
   },
 
   numeroQuantidade: {
     fontSize: 17,
-
     fontWeight: 'bold',
-
     color: cores.textoEscuro,
-
     marginHorizontal: 12,
   },
 });

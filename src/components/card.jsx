@@ -61,85 +61,63 @@ export default function Card({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-
     backgroundColor: cores.fundoClaro,
-
     borderRadius: 12,
-
     padding: 8,
     marginBottom: 10,
-
     minHeight: 95,
   },
 
   imagem: {
     width: 82,
     height: 72,
-
     borderRadius: 9,
-
     marginRight: 10,
-
     alignSelf: 'center',
   },
 
   informacoes: {
     flex: 1,
-
     justifyContent: 'center',
   },
 
   nome: {
     fontSize: 16,
-
     fontWeight: 'bold',
-
     color: cores.textoEscuro,
   },
 
   descricao: {
     fontSize: 14,
-
     color: cores.secundaria,
-
     marginTop: 2,
   },
 
   rodape: {
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
-
     marginTop: 3,
   },
 
   preco: {
     fontSize: 14,
-
     fontWeight: 'bold',
-
     color: cores.erro,
   },
 
   botaoAdicionar: {
     minHeight: 44,
-
     paddingHorizontal: 12,
-
     borderRadius: 22,
-
     backgroundColor: cores.sucesso,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   textoBotao: {
     fontSize: 14,
-
     fontWeight: 'bold',
-
     color: cores.branco,
   },
 });

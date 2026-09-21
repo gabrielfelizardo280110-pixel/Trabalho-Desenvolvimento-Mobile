@@ -85,13 +85,11 @@ export default function Cardapio({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: cores.branco,
   },
 
   conteudo: {
     flex: 1,
-
     paddingHorizontal: 18,
     paddingTop: 15,
   },
@@ -100,22 +98,18 @@ const styles = StyleSheet.create({
     minHeight: 55,
 
     flexDirection: 'row',
-
     justifyContent: 'space-between',
     alignItems: 'center',
 
     backgroundColor: cores.primaria,
 
     borderRadius: 10,
-
     paddingHorizontal: 14,
   },
 
   logo: {
     fontSize: 20,
-
     fontWeight: 'bold',
-
     color: cores.branco,
   },
 
@@ -133,9 +127,7 @@ const styles = StyleSheet.create({
 
   contadorTexto: {
     fontSize: 14,
-
     fontWeight: 'bold',
-
     color: cores.branco,
   },
 
@@ -155,7 +147,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
 
     fontSize: 14,
-
     color: cores.textoEscuro,
   },
 
@@ -167,7 +158,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
 
     fontSize: 14,
-
     color: cores.secundaria,
 
     marginTop: 25,

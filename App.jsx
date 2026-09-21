@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import Cardapio from './src/screens/cardapio';
 import Carrinho from './src/screens/carrinho';
+import Checkout from './src/screens/checkout';
 
 export default function App() {
   const [carrinho, setCarrinho] = useState([]);
@@ -67,6 +68,15 @@ export default function App() {
     0
   );
 
+  if (tela === 'checkout') {
+    return (
+      <Checkout
+        carrinho={carrinho}
+        voltarCarrinho={() => setTela('carrinho')}
+      />
+    );
+  }
+
   if (tela === 'carrinho') {
     return (
       <Carrinho
@@ -74,6 +84,7 @@ export default function App() {
         aumentarQuantidade={aumentarQuantidade}
         diminuirQuantidade={diminuirQuantidade}
         voltarCardapio={() => setTela('cardapio')}
+        irCheckout={() => setTela('checkout')}
       />
     );
   }
