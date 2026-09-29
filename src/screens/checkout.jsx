@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -12,12 +12,12 @@ import {
 } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
-
 import cores from '../constants/cores';
 
 export default function Checkout({
   carrinho,
   voltarCarrinho,
+  onFinalizar,
 }) {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
@@ -28,12 +28,8 @@ export default function Checkout({
   const [referencia, setReferencia] = useState('');
 
   const [pagamento, setPagamento] = useState('');
-
-  const [precisaTroco, setPrecisaTroco] =
-    useState(false);
-
-  const [trocoPara, setTrocoPara] =
-    useState('');
+  const [precisaTroco, setPrecisaTroco] = useState(false);
+  const [trocoPara, setTrocoPara] = useState('');
 
   const [erros, setErros] = useState({});
 
@@ -41,28 +37,11 @@ export default function Checkout({
     return texto.replace(/\D/g, '');
   }
 
-  function alterarTelefone(texto) {
-    setTelefone(somenteNumeros(texto));
-  }
-
-  function alterarCep(texto) {
-    setCep(somenteNumeros(texto));
-  }
-
-  function alterarNumero(texto) {
-    setNumero(somenteNumeros(texto));
-  }
-
-  function alterarTroco(texto) {
-    setTrocoPara(somenteNumeros(texto));
-  }
-
   function validarPedido() {
     const novosErros = {};
 
     const totalItens = carrinho.reduce(
-      (total, item) =>
-        total + item.quantidade,
+      (total, item) => total + item.quantidade,
       0
     );
 
@@ -103,47 +82,49 @@ export default function Checkout({
 
     setErros(novosErros);
 
-    if (
-      Object.keys(novosErros).length === 0
-    ) {
-      console.log('Pedido validado');
+    if (Object.keys(novosErros).length === 0) {
+      onFinalizar({
+        nome: nome.trim(),
+        telefone,
+        cep,
+        endereco: endereco.trim(),
+        numero,
+        complemento: complemento.trim(),
+        referencia: referencia.trim(),
+        pagamento,
+        precisaTroco:
+          pagamento === 'dinheiro' && precisaTroco,
+        trocoPara:
+          pagamento === 'dinheiro' && precisaTroco
+            ? trocoPara
+            : '',
+      });
     }
   }
 
   return (
     <SafeAreaView style={styles.container}>
-
-      <View style={styles.tela}>
-
+      <View style={styles.conteudo}>
         <View style={styles.header}>
-
           <TouchableOpacity
             style={styles.botaoVoltar}
             onPress={voltarCarrinho}
-            activeOpacity={0.7}
           >
-            <Text style={styles.seta}>
-              ←
-            </Text>
+            <Text style={styles.seta}>←</Text>
           </TouchableOpacity>
 
-          <Text style={styles.tituloHeader}>
+          <Text style={styles.titulo}>
             Dados de Entrega
           </Text>
-
-          <View style={styles.espacoHeader} />
-
         </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={
-            styles.formulario
-          }
+          contentContainerStyle={styles.formulario}
+          keyboardShouldPersistTaps="handled"
         >
-
           {erros.carrinho && (
-            <Text style={styles.erroGeral}>
+            <Text style={styles.erro}>
               {erros.carrinho}
             </Text>
           )}
@@ -161,7 +142,6 @@ export default function Checkout({
             placeholderTextColor="#8F96A3"
             value={nome}
             onChangeText={setNome}
-            keyboardType="default"
           />
 
           {erros.nome && (
@@ -177,13 +157,14 @@ export default function Checkout({
           <TextInput
             style={[
               styles.input,
-              erros.telefone &&
-                styles.inputErro,
+              erros.telefone && styles.inputErro,
             ]}
             placeholder="(19) 9____-____"
             placeholderTextColor="#8F96A3"
             value={telefone}
-            onChangeText={alterarTelefone}
+            onChangeText={(texto) =>
+              setTelefone(somenteNumeros(texto))
+            }
             keyboardType="phone-pad"
             maxLength={11}
           />
@@ -206,14 +187,16 @@ export default function Checkout({
             placeholder="13010000"
             placeholderTextColor="#8F96A3"
             value={cep}
-            onChangeText={alterarCep}
+            onChangeText={(texto) =>
+              setCep(somenteNumeros(texto))
+            }
             keyboardType="numeric"
             maxLength={8}
           />
 
           {erros.cep && (
             <Text style={styles.erro}>
-              △ {erros.cep}
+              {erros.cep}
             </Text>
           )}
 
@@ -224,8 +207,7 @@ export default function Checkout({
           <TextInput
             style={[
               styles.input,
-              erros.endereco &&
-                styles.inputErro,
+              erros.endereco && styles.inputErro,
             ]}
             placeholder="Rua ou avenida"
             placeholderTextColor="#8F96A3"
@@ -246,13 +228,14 @@ export default function Checkout({
           <TextInput
             style={[
               styles.input,
-              erros.numero &&
-                styles.inputErro,
+              erros.numero && styles.inputErro,
             ]}
             placeholder="123"
             placeholderTextColor="#8F96A3"
             value={numero}
-            onChangeText={alterarNumero}
+            onChangeText={(texto) =>
+              setNumero(somenteNumeros(texto))
+            }
             keyboardType="numeric"
           />
 
@@ -293,8 +276,7 @@ export default function Checkout({
           <View
             style={[
               styles.pickerContainer,
-              erros.pagamento &&
-                styles.pickerErro,
+              erros.pagamento && styles.inputErro,
             ]}
           >
             <Picker
@@ -308,31 +290,25 @@ export default function Checkout({
                 }
               }}
               mode="dropdown"
+              dropdownIconColor={cores.primaria}
               style={styles.picker}
-              dropdownIconColor={
-                cores.primaria
-              }
             >
               <Picker.Item
                 label="Selecione"
                 value=""
               />
-
               <Picker.Item
                 label="Cartão"
                 value="cartao"
               />
-
               <Picker.Item
                 label="Pix"
                 value="pix"
               />
-
               <Picker.Item
                 label="Dinheiro"
                 value="dinheiro"
               />
-
             </Picker>
           </View>
 
@@ -343,25 +319,21 @@ export default function Checkout({
           )}
 
           {pagamento === 'dinheiro' && (
-            <>
-              <View style={styles.trocoLinha}>
-
+            <View>
+              <View style={styles.linhaTroco}>
                 <Text style={styles.textoTroco}>
                   Preciso de troco
                 </Text>
 
                 <Switch
                   value={precisaTroco}
-                  onValueChange={
-                    setPrecisaTroco
-                  }
+                  onValueChange={setPrecisaTroco}
                   trackColor={{
                     false: '#D9DDE5',
                     true: cores.sucesso,
                   }}
-                  thumbColor="#FFFFFF"
+                  thumbColor={cores.branco}
                 />
-
               </View>
 
               {precisaTroco && (
@@ -375,28 +347,27 @@ export default function Checkout({
                     placeholder="100"
                     placeholderTextColor="#8F96A3"
                     value={trocoPara}
-                    onChangeText={alterarTroco}
+                    onChangeText={(texto) =>
+                      setTrocoPara(somenteNumeros(texto))
+                    }
                     keyboardType="numeric"
                   />
                 </>
               )}
-            </>
+            </View>
           )}
 
           <TouchableOpacity
             style={styles.botaoFinalizar}
-            activeOpacity={0.8}
             onPress={validarPedido}
+            activeOpacity={0.7}
           >
             <Text style={styles.textoFinalizar}>
               Finalizar pedido
             </Text>
           </TouchableOpacity>
-
         </ScrollView>
-
       </View>
-
     </SafeAreaView>
   );
 }
@@ -404,10 +375,10 @@ export default function Checkout({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: cores.branco,
   },
 
-  tela: {
+  conteudo: {
     flex: 1,
     paddingHorizontal: 18,
     paddingTop: 14,
@@ -415,23 +386,17 @@ const styles = StyleSheet.create({
 
   header: {
     height: 52,
-
     flexDirection: 'row',
     alignItems: 'center',
-
     backgroundColor: cores.primaria,
-
-    borderRadius: 7,
-
+    borderRadius: 8,
     paddingHorizontal: 4,
-
     marginBottom: 10,
   },
 
   botaoVoltar: {
     width: 44,
     height: 44,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -442,47 +407,32 @@ const styles = StyleSheet.create({
     color: cores.branco,
   },
 
-  tituloHeader: {
-    flex: 1,
-
+  titulo: {
     fontSize: 20,
     fontWeight: 'bold',
-
     color: cores.branco,
   },
 
-  espacoHeader: {
-    width: 20,
-  },
-
   formulario: {
-    paddingBottom: 25,
+    paddingBottom: 30,
   },
 
   label: {
     fontSize: 14,
     fontWeight: 'bold',
-
     color: cores.textoEscuro,
-
-    marginBottom: 3,
-    marginTop: 5,
+    marginTop: 8,
+    marginBottom: 4,
   },
 
   input: {
-    height: 44,
-
-    backgroundColor: '#FFFFFF',
-
+    minHeight: 44,
+    backgroundColor: cores.branco,
     borderWidth: 1,
     borderColor: '#C7CDD8',
-
-    borderRadius: 7,
-
+    borderRadius: 8,
     paddingHorizontal: 10,
-
     fontSize: 14,
-
     color: cores.textoEscuro,
   },
 
@@ -492,86 +442,53 @@ const styles = StyleSheet.create({
 
   erro: {
     fontSize: 14,
-
     color: cores.erro,
-
-    marginTop: 3,
-    marginBottom: 1,
-  },
-
-  erroGeral: {
-    fontSize: 14,
-    fontWeight: 'bold',
-
-    color: cores.erro,
-
-    marginBottom: 5,
+    marginTop: 4,
   },
 
   pickerContainer: {
-    height: 44,
-
-    backgroundColor: '#FFFFFF',
-
+    height: 48,
+    backgroundColor: cores.branco,
     borderWidth: 1,
     borderColor: '#C7CDD8',
-
-    borderRadius: 7,
-
+    borderRadius: 8,
     justifyContent: 'center',
-
     overflow: 'hidden',
-  },
-
-  pickerErro: {
-    borderColor: cores.erro,
   },
 
   picker: {
     width: '100%',
-    height: 44,
-
+    height: 48,
     color: cores.textoEscuro,
-
-    fontSize: 14,
   },
 
-  trocoLinha: {
+  linhaTroco: {
     minHeight: 48,
-
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
-
-    marginTop: 5,
+    marginTop: 6,
   },
 
   textoTroco: {
     fontSize: 14,
     fontWeight: 'bold',
-
     color: cores.textoEscuro,
   },
 
   botaoFinalizar: {
-    minHeight: 48,
-
+    minHeight: 50,
     backgroundColor: cores.primaria,
-
-    borderRadius: 8,
-
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-
-    marginTop: 16,
-    marginBottom: 10,
+    marginTop: 18,
+    marginBottom: 12,
   },
 
   textoFinalizar: {
     fontSize: 16,
     fontWeight: 'bold',
-
     color: cores.branco,
   },
 });

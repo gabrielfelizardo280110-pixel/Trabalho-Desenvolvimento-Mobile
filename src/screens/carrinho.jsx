@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 
+import React from 'react';
 import {
   SafeAreaView,
   View,
@@ -15,13 +15,13 @@ import cores from '../constants/cores';
 
 export default function Carrinho({
   carrinho,
+  cupom,
+  setCupom,
   aumentarQuantidade,
   diminuirQuantidade,
   voltarCardapio,
   irCheckout,
 }) {
-  const [cupom, setCupom] = useState('');
-
   const subtotal = carrinho.reduce(
     (total, item) =>
       total + item.preco * item.quantidade,
@@ -35,51 +35,50 @@ export default function Carrinho({
     ? subtotal * 0.1
     : 0;
 
-  const taxaEntrega =
-    carrinho.length > 0 ? 6 : 0;
-
-  const total =
-    subtotal - desconto + taxaEntrega;
+  const entrega = carrinho.length > 0 ? 6 : 0;
+  const total = subtotal - desconto + entrega;
 
   function formatarPreco(valor) {
-    return `R$ ${valor
-      .toFixed(2)
-      .replace('.', ',')}`;
+    return `R$ ${valor.toFixed(2).replace('.', ',')}`;
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.conteudo}>
-
         <View style={styles.header}>
           <TouchableOpacity
-            style={styles.botaoVoltar}
+            style={styles.voltar}
             onPress={voltarCardapio}
-            activeOpacity={0.7}
           >
-            <Text style={styles.textoVoltar}>
-              ←
-            </Text>
+            <Text style={styles.seta}>←</Text>
           </TouchableOpacity>
 
-          <Text style={styles.tituloHeader}>
+          <Text style={styles.titulo}>
             Meu Carrinho
           </Text>
 
-          <View style={styles.espacoHeader} />
+          <View style={styles.espaco} />
         </View>
 
         <View style={styles.areaLista}>
           {carrinho.length === 0 ? (
-            <View style={styles.carrinhoVazio}>
-              <Text style={styles.textoCarrinhoVazio}>
+            <View style={styles.areaVazia}>
+              <Text style={styles.textoVazio}>
                 Seu carrinho está vazio.
               </Text>
+
+              <TouchableOpacity
+                style={styles.botaoVoltar}
+                onPress={voltarCardapio}
+              >
+                <Text style={styles.textoBotao}>
+                  Voltar ao cardápio
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.lista}
             >
               {carrinho.map((item) => (
                 <ItemCarrinho
@@ -98,9 +97,8 @@ export default function Carrinho({
         </View>
 
         <View style={styles.resumo}>
-
           <TextInput
-            style={styles.cupom}
+            style={styles.inputCupom}
             placeholder="Cupom de desconto"
             placeholderTextColor={cores.secundaria}
             value={cupom}
@@ -109,45 +107,40 @@ export default function Carrinho({
           />
 
           <View style={styles.linha}>
-            <Text style={styles.textoResumo}>
+            <Text style={styles.descricao}>
               Subtotal
             </Text>
-
-            <Text style={styles.valorResumo}>
+            <Text style={styles.valor}>
               {formatarPreco(subtotal)}
             </Text>
           </View>
 
-          {cupomValido &&
-            carrinho.length > 0 && (
-              <View style={styles.linha}>
-                <Text style={styles.textoDesconto}>
-                  Desconto
-                </Text>
-
-                <Text style={styles.textoDesconto}>
-                  - {formatarPreco(desconto)}
-                </Text>
-              </View>
-            )}
+          {cupomValido && carrinho.length > 0 && (
+            <View style={styles.linha}>
+              <Text style={styles.desconto}>
+                Desconto (10%)
+              </Text>
+              <Text style={styles.desconto}>
+                - {formatarPreco(desconto)}
+              </Text>
+            </View>
+          )}
 
           <View style={styles.linha}>
-            <Text style={styles.textoResumo}>
+            <Text style={styles.descricao}>
               Entrega
             </Text>
-
-            <Text style={styles.valorResumo}>
-              {formatarPreco(taxaEntrega)}
+            <Text style={styles.valor}>
+              {formatarPreco(entrega)}
             </Text>
           </View>
 
-          <View style={styles.separador} />
+          <View style={styles.divisor} />
 
           <View style={styles.linha}>
             <Text style={styles.totalTexto}>
               TOTAL
             </Text>
-
             <Text style={styles.totalValor}>
               {formatarPreco(total)}
             </Text>
@@ -156,21 +149,18 @@ export default function Carrinho({
           <TouchableOpacity
             style={[
               styles.botaoContinuar,
-
               carrinho.length === 0 &&
                 styles.botaoDesabilitado,
             ]}
             disabled={carrinho.length === 0}
-            activeOpacity={0.7}
             onPress={irCheckout}
+            activeOpacity={0.7}
           >
             <Text style={styles.textoContinuar}>
               Continuar
             </Text>
           </TouchableOpacity>
-
         </View>
-
       </View>
     </SafeAreaView>
   );
@@ -191,40 +181,35 @@ const styles = StyleSheet.create({
 
   header: {
     minHeight: 55,
-
+    backgroundColor: cores.primaria,
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-
-    backgroundColor: cores.primaria,
-
-    borderRadius: 10,
     paddingHorizontal: 6,
-
     marginBottom: 12,
   },
 
-  botaoVoltar: {
+  voltar: {
     width: 44,
     height: 44,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  textoVoltar: {
+  seta: {
     fontSize: 26,
     fontWeight: 'bold',
     color: cores.branco,
   },
 
-  tituloHeader: {
+  titulo: {
     fontSize: 20,
     fontWeight: 'bold',
     color: cores.branco,
   },
 
-  espacoHeader: {
+  espaco: {
     width: 44,
   },
 
@@ -232,75 +217,76 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  lista: {
-    paddingBottom: 10,
-  },
-
-  carrinhoVazio: {
+  areaVazia: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  textoCarrinhoVazio: {
+  textoVazio: {
     fontSize: 16,
     color: cores.secundaria,
   },
 
+  botaoVoltar: {
+    minHeight: 44,
+    paddingHorizontal: 16,
+    backgroundColor: cores.primaria,
+    borderRadius: 10,
+    justifyContent: 'center',
+    marginTop: 14,
+  },
+
+  textoBotao: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: cores.branco,
+  },
+
   resumo: {
     backgroundColor: cores.fundoClaro,
-
     borderRadius: 12,
-
     padding: 14,
     marginTop: 5,
   },
 
-  cupom: {
+  inputCupom: {
     minHeight: 44,
-
     backgroundColor: cores.branco,
-
     borderWidth: 1,
     borderColor: cores.borda,
-
     borderRadius: 8,
-
     paddingHorizontal: 12,
-
     fontSize: 14,
     color: cores.textoEscuro,
-
     marginBottom: 12,
   },
 
   linha: {
     flexDirection: 'row',
-
     alignItems: 'center',
     justifyContent: 'space-between',
-
     marginVertical: 4,
   },
 
-  textoResumo: {
+  descricao: {
     fontSize: 14,
     color: cores.secundaria,
   },
 
-  valorResumo: {
+  valor: {
     fontSize: 14,
     fontWeight: 'bold',
     color: cores.textoEscuro,
   },
 
-  textoDesconto: {
+  desconto: {
     fontSize: 14,
     fontWeight: 'bold',
     color: cores.sucesso,
   },
 
-  separador: {
+  divisor: {
     height: 1,
     backgroundColor: cores.borda,
     marginVertical: 8,
@@ -320,14 +306,10 @@ const styles = StyleSheet.create({
 
   botaoContinuar: {
     minHeight: 48,
-
     backgroundColor: cores.primaria,
-
     borderRadius: 10,
-
     alignItems: 'center',
     justifyContent: 'center',
-
     marginTop: 14,
   },
 
